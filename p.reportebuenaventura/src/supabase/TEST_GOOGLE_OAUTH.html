@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Google OAuth - ReporteBuenaventura</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #10b981 0%, #eab308 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: #10b981;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .test-section {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .test-section h2 {
+            color: #374151;
+            font-size: 18px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #d1d5db;
+        }
+        
+        .test-item.success {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        .test-item.error {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+        
+        .test-item.warning {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+        
+        .test-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .test-value {
+            color: #6b7280;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            word-break: break-all;
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+        }
+        
+        .icon.success {
+            color: #10b981;
+        }
+        
+        .icon.error {
+            color: #ef4444;
+        }
+        
+        .icon.warning {
+            color: #f59e0b;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #10b981 0%, #eab308 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .instructions {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        .instructions h3 {
+            color: #1e40af;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .instructions ul {
+            list-style-position: inside;
+            color: #374151;
+            line-height: 1.8;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .copy-btn {
+            background: #3b82f6;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: opacity 0.2s;
+        }
+        
+        .copy-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .summary {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .summary.success {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        .summary.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        
+        .summary h3 {
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+        
+        .summary p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test de Diagnóstico - Google OAuth</h1>
+        <p class="subtitle">ReporteBuenaventura</p>
+        
+        <button onclick="runTests()">▶️ Ejecutar Diagnóstico</button>
+        
+        <div id="results"></div>
+    </div>
+    
+    <script>
+        function runTests() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p style="text-align: center; color: #6b7280;">Ejecutando pruebas...</p>';
+            
+            setTimeout(() => {
+                let html = '';
+                let errors = [];
+                let warnings = [];
+                let successes = [];
+                
+                // Test 1: Ubicación de la aplicación
+                html += '<div class="test-section"><h2>📍 Test 1: Ubicación de la Aplicación</h2>';
+                
+                const origin = window.location.origin;
+                const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+                const isSupabase = origin.includes('supabase.co');
+                
+                if (isLocalhost || isSupabase) {
+                    html += `<div class="test-item success">
+                        <div class="test-label"><span class="icon success">✅</span> URL de origen</div>
+                        <div class="test-value">${origin}</div>
+                    </div>`;
+                    successes.push('Origen válido');
+                } else {
+                    html += `<div class="test-item warning">
+                        <div class="test-label"><span class="icon warning">⚠️</span> URL de origen</div>
+                        <div class="test-value">${origin}</div>
+                        <p style="margin-top: 8px; color: #f59e0b; font-size: 12px;">Esta URL debe estar registrada en Google Cloud Console</p>
+                    </div>`;
+                    warnings.push('URL no estándar - debe estar registrada');
+                }
+                
+                html += '</div>';
+                
+                // Test 2: Verificar URLs que deben estar en Google Cloud Console
+                html += '<div class="test-section"><h2>🌐 Test 2: URLs para Google Cloud Console</h2>';
+                
+                const supabaseCallbackUrl = 'https://ckbuycsuhixyuuqslgbf.supabase.co/auth/v1/callback';
+                const supabaseOrigin = 'https://ckbuycsuhixyuuqslgbf.supabase.co';
+                
+                html += `<div class="test-item">
+                    <div class="test-label">🔗 Callback URL (CRÍTICO)</div>
+                    <div class="test-value">${supabaseCallbackUrl}
+                        <button class="copy-btn" onclick="copyToClipboard('${supabaseCallbackUrl}')">📋 Copiar</button>
+                    </div>
+                    <p style="margin-top: 8px; color: #6b7280; font-size: 12px;">
+                        Debe estar en: <strong>URIs de redireccionamiento autorizados</strong>
+                    </p>
+                </div>`;
+                
+                html += `<div class="test-item">
+                    <div class="test-label">🌍 Origen de Supabase</div>
+                    <div class="test-value">${supabaseOrigin}
+                        <button class="copy-btn" onclick="copyToClipboard('${supabaseOrigin}')">📋 Copiar</button>
+                    </div>
+                    <p style="margin-top: 8px; color: #6b7280; font-size: 12px;">
+                        Debe estar en: <strong>Orígenes autorizados de JavaScript</strong>
+                    </p>
+                </div>`;
+                
+                if (isLocalhost) {
+                    html += `<div class="test-item">
+                        <div class="test-label">💻 Localhost (desarrollo)</div>
+                        <div class="test-value">http://localhost:5173
+                            <button class="copy-btn" onclick="copyToClipboard('http://localhost:5173')">📋 Copiar</button>
+                        </div>
+                        <p style="margin-top: 8px; color: #6b7280; font-size: 12px;">
+                            Debe estar en <strong>AMBAS</strong> secciones (Orígenes Y URIs de redirección)
+                        </p>
+                    </div>`;
+                }
+                
+                html += '</div>';
+                
+                // Test 3: Verificar Local Storage
+                html += '<div class="test-section"><h2>💾 Test 3: Estado de Autenticación</h2>';
+                
+                const hasSupabaseSession = localStorage.getItem('supabase.auth.token') !== null;
+                const hasAccessToken = localStorage.getItem('accessToken') !== null;
+                
+                if (hasSupabaseSession) {
+                    html += `<div class="test-item success">
+                        <div class="test-label"><span class="icon success">✅</span> Sesión de Supabase</div>
+                        <div class="test-value">Detectada</div>
+                    </div>`;
+                    successes.push('Sesión activa encontrada');
+                } else {
+                    html += `<div class="test-item">
+                        <div class="test-label">ℹ️ Sesión de Supabase</div>
+                        <div class="test-value">No detectada (normal si no has iniciado sesión)</div>
+                    </div>`;
+                }
+                
+                if (hasAccessToken) {
+                    html += `<div class="test-item success">
+                        <div class="test-label"><span class="icon success">✅</span> Access Token</div>
+                        <div class="test-value">Presente</div>
+                    </div>`;
+                } else {
+                    html += `<div class="test-item">
+                        <div class="test-label">ℹ️ Access Token</div>
+                        <div class="test-value">No presente (normal si no has iniciado sesión)</div>
+                    </div>`;
+                }
+                
+                html += '</div>';
+                
+                // Test 4: Verificar URL parameters (después de redirect de Google)
+                html += '<div class="test-section"><h2>🔗 Test 4: Parámetros de URL</h2>';
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const hasCode = urlParams.has('code');
+                const hasError = urlParams.has('error');
+                const errorDescription = urlParams.get('error_description');
+                
+                if (hasCode) {
+                    html += `<div class="test-item success">
+                        <div class="test-label"><span class="icon success">✅</span> Código OAuth</div>
+                        <div class="test-value">Detectado - Google ha redirigido exitosamente</div>
+                    </div>`;
+                    successes.push('Código OAuth recibido');
+                } else if (hasError) {
+                    html += `<div class="test-item error">
+                        <div class="test-label"><span class="icon error">❌</span> Error OAuth</div>
+                        <div class="test-value">${urlParams.get('error')}</div>
+                        ${errorDescription ? `<p style="margin-top: 8px; color: #ef4444; font-size: 12px;">${errorDescription}</p>` : ''}
+                    </div>`;
+                    errors.push('Error en OAuth: ' + urlParams.get('error'));
+                } else {
+                    html += `<div class="test-item">
+                        <div class="test-label">ℹ️ Estado</div>
+                        <div class="test-value">No hay redirección activa de Google</div>
+                        <p style="margin-top: 8px; color: #6b7280; font-size: 12px;">
+                            Esto es normal si aún no has hecho click en "Continuar con Google"
+                        </p>
+                    </div>`;
+                }
+                
+                html += '</div>';
+                
+                // Test 5: Verificar que Supabase SDK esté disponible (si se carga en la app)
+                html += '<div class="test-section"><h2>🔧 Test 5: Consola del Navegador</h2>';
+                
+                html += `<div class="test-item">
+                    <div class="test-label">📝 Instrucciones</div>
+                    <p style="margin-top: 8px; color: #6b7280; font-size: 13px; line-height: 1.6;">
+                        1. Abre la Consola del Navegador (presiona <code>F12</code>)<br>
+                        2. Ve a la pestaña <strong>"Console"</strong><br>
+                        3. Haz click en el botón "Continuar con Google" en tu aplicación<br>
+                        4. Observa si aparecen errores en la consola<br>
+                        5. Si hay errores, cópialos y busca la solución
+                    </p>
+                </div>`;
+                
+                html += '</div>';
+                
+                // Resumen
+                const totalTests = 5;
+                const hasErrors = errors.length > 0;
+                const hasWarnings = warnings.length > 0;
+                
+                html += '<div class="summary ' + (hasErrors ? 'error' : 'success') + '">';
+                
+                if (hasErrors) {
+                    html += '<h3>❌ Se Detectaron Problemas</h3>';
+                    html += '<p>Por favor, revisa los errores arriba y sigue las instrucciones de solución.</p>';
+                } else if (hasWarnings) {
+                    html += '<h3>⚠️ Advertencias Encontradas</h3>';
+                    html += '<p>Todo parece estar bien, pero verifica las advertencias arriba.</p>';
+                } else {
+                    html += '<h3>✅ Configuración Correcta</h3>';
+                    html += '<p>No se detectaron problemas. Si Google OAuth no funciona, revisa la documentación.</p>';
+                }
+                
+                html += '</div>';
+                
+                // Instrucciones adicionales
+                html += `
+                <div class="instructions">
+                    <h3>📚 Siguiente Paso</h3>
+                    <ul>
+                        <li>✅ Copia las URLs mostradas arriba</li>
+                        <li>✅ Ve a <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color: #1d4ed8;">Google Cloud Console</a></li>
+                        <li>✅ Agrega las URLs en las secciones correctas</li>
+                        <li>✅ Guarda los cambios y espera 2 minutos</li>
+                        <li>✅ Vuelve a tu aplicación y prueba el login con Google</li>
+                    </ul>
+                    <p style="margin-top: 16px; color: #6b7280; font-size: 13px;">
+                        Si necesitas ayuda detallada, revisa: <code>SOLUCION_GOOGLE_OAUTH.md</code>
+                    </p>
+                </div>
+                `;
+                
+                resultsDiv.innerHTML = html;
+            }, 500);
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Copiado al portapapeles: ' + text);
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+                prompt('Copia esta URL manualmente:', text);
+            });
+        }
+        
+        // Auto-ejecutar al cargar
+        window.addEventListener('load', () => {
+            runTests();
+        });
+    </script>
+</body>
+</html>
